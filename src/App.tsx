@@ -68,29 +68,29 @@ const cards: Card[] = [
 export function App() {
 	const cardGridRef = useRef<HTMLDivElement>(null)
 
-	const cardClass = tw`aspect-[2.5/3.5] h-72 rounded-xl border-4 justify-between pb-8 pt-6 pr-2 flex flex-col gap-4`
+	const cardClass = tw`flex aspect-[2.5/3.5] h-72 flex-col justify-between gap-4 rounded-xl border-4 pt-6 pr-2 pb-8`
 
 	return (
-		<main className="flex flex-col h-dvh gap-4 items-center justify-center">
+		<main className="flex h-dvh flex-col items-center justify-center gap-4">
 			<div
 				ref={cardGridRef}
-				className="
-					grid grid-cols-[repeat(3,auto)] gap-2 p-1 place-content-center inset-0 flex-wrap
-					[--card-bg-base-color:0.85_0.23]
-					[--card-fg-base-color:0.4_0.1]
-					[--icon-col-width:--spacing(10)]
-				"
+				className={twMerge(
+					"grid grid-cols-[repeat(3,auto)] flex-wrap place-content-center gap-2 p-1",
+					"[--card-bg-base-color:0.85_0.23]",
+					"[--card-fg-base-color:0.4_0.1]",
+					"[--icon-col-width:--spacing(10)]",
+				)}
 			>
 				{cards.map((card) => (
 					<div key={card.name} className={twMerge(cardClass, card.className)}>
 						<div className="flex items-center">
-							<div className="w-(--icon-col-width) flex justify-center">
+							<div className="flex w-(--icon-col-width) justify-center">
 								<Icon
 									icon={card.icon}
 									className={twMerge("size-6", card.iconClassName)}
 								/>
 							</div>
-							<p className="text-2xl flex-1 font-light">{card.name}</p>
+							<p className="flex-1 font-light text-2xl">{card.name}</p>
 						</div>
 
 						{[
@@ -99,30 +99,31 @@ export function App() {
 							{ icon: "lucide:eye", text: `Sense ${card.sense}` },
 							{ icon: "lucide:box", text: card.effect },
 						].map((row, index) => (
-							// biome-ignore lint/suspicious/noArrayIndexKey: shut the fuck up
-							<div className="flex items-center h-7" key={index}>
-								<div className="w-(--icon-col-width) flex justify-center">
+							<div className="flex h-7 items-center" key={index}>
+								<div className="flex w-(--icon-col-width) justify-center">
 									<Icon icon={row.icon} className="size-5" />
 								</div>
-								<p className="text-sm leading-[1.1] flex-1 font-medium">
+								<p className="flex-1 font-medium text-sm leading-[1.1]">
 									{row.text.slice(0, 1).toLocaleUpperCase() + row.text.slice(1)}
 								</p>
 							</div>
 						))}
 					</div>
 				))}
+
 				<div
 					className={twMerge(
 						cardClass,
-						"flex items-center justify-center bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
+						"-outline-offset-4 flex items-center justify-center border-none bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green text-black/45 outline-4 outline-black/60",
 					)}
 				>
 					<Icon icon="lucide:pentagon" className="size-32" />
 				</div>
 			</div>
+
 			<button
 				type="button"
-				className="bg-aspects-blue text-aspects-blue-dark rounded-md px-3 py-2 hover:brightness-80 transition leading-tight"
+				className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
 				onClick={() => {
 					const subject = cardGridRef.current as HTMLElement
 
