@@ -20,10 +20,10 @@ const cards: Card[] = [
 	{
 		name: "Animosity",
 		icon: "lucide:flame",
-		aura: "rage, envy, destruction",
+		aura: "rage, envy, drive",
 		material: "flame, heat, magma",
 		sense: "with instinct",
-		effect: "Damage 1d6",
+		effect: "Damage (+1 die)",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
 		iconClassName: tw`-translate-y-px`,
 	},
@@ -33,34 +33,34 @@ const cards: Card[] = [
 		aura: "peace, comfort, protection",
 		material: "water, ice, vapor",
 		sense: "through\ntouch/atmosphere",
-		effect: "Block 1d6",
+		effect: "Block (1d6)",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
 	},
 	{
-		name: "Freedom",
+		name: "Fluidity",
 		icon: "lucide:star",
-		aura: "turbulence, swiftness",
+		aura: "liberation, swiftness, flexibility",
 		material: "air, sound, acrobatics",
 		sense: "through sound/smell",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
 	},
 	{
-		name: "Instinct",
+		name: "Wonder",
 		icon: "lucide:compass",
 		aura: "knowledge, perception",
 		material: "lumen, healing, enhancement",
 		sense: "through sight",
-		effect: "Heal 1d6",
+		effect: "Heal (1d6)",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
 	},
 	{
-		name: "Control",
+		name: "Tension",
 		icon: "lucide:heart-crack",
-		aura: "tension, mistrust, manipulation",
+		aura: "suspicion, mistrust, manipulation",
 		material: "umbra, illusions, psychology",
 		sense: "through emotions",
-		effect: "Evade 2d6",
+		effect: "Evade (2d6)",
 		className: tw`bg-aspects-purple text-aspects-purple-dark`,
 	},
 ]
@@ -68,7 +68,7 @@ const cards: Card[] = [
 export function App() {
 	const cardGridRef = useRef<HTMLDivElement>(null)
 
-	const cardClass = tw`flex aspect-[2.5/3.5] h-68 flex-col justify-between gap-4 rounded-xl border-4 pt-6 pb-8`
+	const cardClass = tw`flex aspect-[2.5/3.5] h-70 flex-col justify-between gap-4 rounded-xl border-4 pt-6 pb-8`
 
 	return (
 		<main className="flex h-dvh flex-col items-center justify-center gap-4">
@@ -84,13 +84,20 @@ export function App() {
 				{cards.map((card) => (
 					<div
 						key={card.name}
-						className={twMerge(cardClass, "pr-3", card.className)}
+						className={twMerge(
+							cardClass,
+							"pr-3 text-shadow-black/10 text-shadow-sm",
+							card.className,
+						)}
 					>
 						<div className="flex items-center">
 							<div className="flex w-(--icon-col-width) justify-center">
 								<Icon
 									icon={card.icon}
-									className={twMerge("size-6", card.iconClassName)}
+									className={twMerge(
+										"size-6 drop-shadow-black/20 drop-shadow-xs",
+										card.iconClassName,
+									)}
 								/>
 							</div>
 							<p className="flex-1 font-light text-2xl">{card.name}</p>
@@ -104,7 +111,10 @@ export function App() {
 						].map((row, index) => (
 							<div className="flex h-7 items-center" key={index}>
 								<div className="flex w-(--icon-col-width) justify-center">
-									<Icon icon={row.icon} className="size-5" />
+									<Icon
+										icon={row.icon}
+										className="size-5 drop-shadow-black/20 drop-shadow-xs"
+									/>
 								</div>
 								<p className="flex-1 font-medium text-sm leading-[1.1]">
 									{row.text.slice(0, 1).toLocaleUpperCase() + row.text.slice(1)}
@@ -120,7 +130,10 @@ export function App() {
 						"-outline-offset-4 flex items-center justify-center border-none bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green text-black/45 outline-4 outline-black/60",
 					)}
 				>
-					<Icon icon="lucide:pentagon" className="size-32" />
+					<Icon
+						icon="lucide:pentagon"
+						className="size-32 drop-shadow-black/20 drop-shadow-md"
+					/>
 				</div>
 			</div>
 
