@@ -32,7 +32,7 @@ const cards: Card[] = [
 		icon: "lucide:shield",
 		aura: "peace, comfort, protection",
 		material: "water, ice, vapor",
-		sense: "through touch or atmosphere",
+		sense: "through\ntouch/atmosphere",
 		effect: "Block 1d6",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
 	},
@@ -41,7 +41,7 @@ const cards: Card[] = [
 		icon: "lucide:star",
 		aura: "turbulence, swiftness",
 		material: "air, sound, acrobatics",
-		sense: "through sound or smell",
+		sense: "through sound/smell",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
 	},
@@ -68,7 +68,7 @@ const cards: Card[] = [
 export function App() {
 	const cardGridRef = useRef<HTMLDivElement>(null)
 
-	const cardClass = tw`flex aspect-[2.5/3.5] h-72 flex-col justify-between gap-4 rounded-xl border-4 pt-6 pr-2 pb-8`
+	const cardClass = tw`flex aspect-[2.5/3.5] h-68 flex-col justify-between gap-4 rounded-xl border-4 pt-6 pb-8`
 
 	return (
 		<main className="flex h-dvh flex-col items-center justify-center gap-4">
@@ -82,7 +82,10 @@ export function App() {
 				)}
 			>
 				{cards.map((card) => (
-					<div key={card.name} className={twMerge(cardClass, card.className)}>
+					<div
+						key={card.name}
+						className={twMerge(cardClass, "pr-3", card.className)}
+					>
 						<div className="flex items-center">
 							<div className="flex w-(--icon-col-width) justify-center">
 								<Icon
