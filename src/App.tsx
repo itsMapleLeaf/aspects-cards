@@ -68,6 +68,8 @@ const cards: Card[] = [
 export function App() {
 	const cardGridRef = useRef<HTMLDivElement>(null)
 
+	const cardClass = tw`aspect-[2.5/3.5] h-72 rounded-xl border-4 justify-between pb-8 pt-6 pr-2 flex flex-col gap-4`
+
 	return (
 		<main className="flex flex-col h-dvh gap-4 items-center justify-center">
 			<div
@@ -80,13 +82,7 @@ export function App() {
 				"
 			>
 				{cards.map((card) => (
-					<div
-						key={card.name}
-						className={twMerge(
-							"aspect-[2.5/3.5] h-68 rounded-xl border-4 justify-between pb-8 pt-6 pr-2 flex flex-col gap-4",
-							card.className,
-						)}
-					>
+					<div key={card.name} className={twMerge(cardClass, card.className)}>
 						<div className="flex items-center">
 							<div className="w-(--icon-col-width) flex justify-center">
 								<Icon
@@ -117,8 +113,8 @@ export function App() {
 				))}
 				<div
 					className={twMerge(
-						"aspect-[2.5/3.5] h-68 rounded-xl justify-between pb-8 pt-6 pr-2 flex flex-col gap-4",
-						"flex items-center justify-center bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green text-black/50 outline-4 outline-current -outline-offset-4",
+						cardClass,
+						"flex items-center justify-center bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
 					)}
 				>
 					<Icon icon="lucide:pentagon" className="size-32" />
