@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* prettier-ignore */
+@theme {
+	--default-font-family: "Lexend Variable";
+
+	--color-aspects-red: #FF6969;
+	--color-aspects-red-dark: color-mix(in oklch, var(--color-aspects-red), black 50%);
+	--color-aspects-yellow: #FFD884;
+	--color-aspects-yellow-dark: color-mix(in oklch, var(--color-aspects-yellow), black 50%);
+	--color-aspects-green: #A1FF84;
+	--color-aspects-green-dark: color-mix(in oklch, var(--color-aspects-green), black 50%);
+	--color-aspects-blue: #84B5FF;
+	--color-aspects-blue-dark: color-mix(in oklch, var(--color-aspects-blue), black 50%);
+	--color-aspects-purple: #C884FF;
+	--color-aspects-purple-dark: color-mix(in oklch, var(--color-aspects-purple), black 50%);
+}
