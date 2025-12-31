@@ -12,7 +12,7 @@ type Aspect = {
 	effect: string
 	className: string
 	iconClassName?: string
-	actions: (string | { name: string; label: string })[]
+	actions: (string | { name: string; label: string; icon: string })[]
 }
 
 const tw = String.raw
@@ -20,7 +20,7 @@ const tw = String.raw
 const aspect: Aspect[] = [
 	{
 		name: "Animosity",
-		icon: "mingcute:fire-line",
+		icon: "mingcute:sword-line",
 		aura: "rage, envy, drive",
 		material: "flame, heat, magma",
 		found: "dangerous",
@@ -32,7 +32,7 @@ const aspect: Aspect[] = [
 			"Exert",
 			"Intimidate",
 			"Endure",
-			{ name: "Fire", label: "Aspect Art" },
+			{ name: "Fire", label: "Aspect Art", icon: "mingcute:fire-line" },
 		],
 		iconClassName: tw`-translate-y-px`,
 	},
@@ -50,7 +50,7 @@ const aspect: Aspect[] = [
 			"Empower",
 			"Restore",
 			"Locate",
-			{ name: "Water", label: "Aspect Art" },
+			{ name: "Water", label: "Aspect Art", icon: "mingcute:drop-line" },
 		],
 	},
 	{
@@ -67,7 +67,7 @@ const aspect: Aspect[] = [
 			"Balance",
 			"Endure",
 			"Sneak",
-			{ name: "Wind", label: "Aspect Art" },
+			{ name: "Wind", label: "Aspect Art", icon: "mingcute:wind-line" },
 		],
 	},
 	{
@@ -84,7 +84,7 @@ const aspect: Aspect[] = [
 			"Create",
 			"Restore",
 			"Locate",
-			{ name: "Light", label: "Aspect Art" },
+			{ name: "Light", label: "Aspect Art", icon: "mingcute:sun-line" },
 		],
 	},
 	{
@@ -101,7 +101,7 @@ const aspect: Aspect[] = [
 			"Deceive",
 			"Intimidate",
 			"Sneak",
-			{ name: "Darkness", label: "Aspect Art" },
+			{ name: "Darkness", label: "Aspect Art", icon: "mingcute:moon-line" },
 		],
 	},
 ]
@@ -127,7 +127,7 @@ export function App() {
 						aspect.actions
 							.map((action) =>
 								typeof action === "string"
-									? { name: action, label: "Action" }
+									? { name: action, label: "Action", icon: aspect.icon }
 									: action,
 							)
 							.map((action) => (
@@ -142,20 +142,20 @@ export function App() {
 									<div className="absolute inset-0 bg-stripes opacity-4"></div>
 									<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
 
-									<div className="absolute top-0 left-0 p-1.5 opacity-50">
-										<Icon icon={aspect.icon} className="size-6" />
+									<div className="absolute top-0 left-0 p-1.5 opacity-70">
+										<Icon icon={action.icon} className="size-6" />
 									</div>
-									<div className="absolute bottom-0 left-0 p-1.5 opacity-50">
-										<Icon icon={aspect.icon} className="size-6" />
+									<div className="absolute bottom-0 left-0 p-1.5 opacity-70">
+										<Icon icon={action.icon} className="size-6" />
 									</div>
-									<div className="absolute top-0 right-0 p-1.5 opacity-50">
-										<Icon icon={aspect.icon} className="size-6" />
+									<div className="absolute top-0 right-0 p-1.5 opacity-70">
+										<Icon icon={action.icon} className="size-6" />
 									</div>
-									<div className="absolute right-0 bottom-0 p-1.5 opacity-50">
-										<Icon icon={aspect.icon} className="size-6" />
+									<div className="absolute right-0 bottom-0 p-1.5 opacity-70">
+										<Icon icon={action.icon} className="size-6" />
 									</div>
 
-									<div className="-translate-x-1/2 -rotate-90 absolute left-4 font-medium text-xs opacity-60">
+									<div className="-translate-x-1/2 -rotate-90 absolute left-4 font-medium text-xs opacity-80">
 										{action.name}
 									</div>
 
