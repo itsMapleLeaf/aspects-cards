@@ -3,7 +3,7 @@ import { toPng } from "html-to-image"
 import { useRef } from "react"
 import { twMerge } from "tailwind-merge"
 
-type Card = {
+type Aspect = {
 	name: string
 	icon: string
 	aura: string
@@ -12,153 +12,217 @@ type Card = {
 	effect: string
 	className: string
 	iconClassName?: string
+	actions: (string | { name: string; label: string })[]
 }
 
 const tw = String.raw
 
-const cards: Card[] = [
+const aspect: Aspect[] = [
 	{
 		name: "Animosity",
-		icon: "lucide:flame",
+		icon: "mingcute:fire-line",
 		aura: "rage, envy, drive",
 		material: "flame, heat, magma",
 		found: "dangerous",
 		effect: "Damage (+1 die)",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
+		actions: [
+			"Strike",
+			"Block",
+			"Exert",
+			"Intimidate",
+			"Endure",
+			{ name: "Fire", label: "Aspect Art" },
+		],
 		iconClassName: tw`-translate-y-px`,
 	},
 	{
 		name: "Connection",
-		icon: "lucide:shield",
+		icon: "mingcute:shield-shape-line",
 		aura: "peace, comfort, protection",
 		material: "water, ice, vapor",
-		found: "\ninviting",
+		found: "inviting",
 		effect: "Block (1d6)",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
+		actions: [
+			"Protect",
+			"Comfort",
+			"Empower",
+			"Restore",
+			"Locate",
+			{ name: "Water", label: "Aspect Art" },
+		],
 	},
 	{
-		name: "Fluidity",
-		icon: "lucide:star",
+		name: "Freedom",
+		icon: "mingcute:bling-line",
 		aura: "liberation, swiftness, flexibility",
 		material: "air, sound, acrobatics",
 		found: "unorthodox",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
+		actions: [
+			"Evade",
+			"Dash",
+			"Balance",
+			"Endure",
+			"Sneak",
+			{ name: "Wind", label: "Aspect Art" },
+		],
 	},
 	{
 		name: "Wonder",
-		icon: "lucide:compass",
+		icon: "mingcute:compass-line",
 		aura: "knowledge, perception",
 		material: "lumen, healing, enhancement",
 		found: "valuable",
 		effect: "Heal (1d6)",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
+		actions: [
+			"Aim",
+			"Evaluate",
+			"Create",
+			"Restore",
+			"Locate",
+			{ name: "Light", label: "Aspect Art" },
+		],
 	},
 	{
 		name: "Tension",
-		icon: "lucide:heart-crack",
+		icon: "mingcute:heart-crack-line",
 		aura: "suspicion, mistrust, manipulation",
 		material: "umbra, illusions, psychology",
 		found: "unsettling",
 		effect: "Evade (2d6)",
 		className: tw`bg-aspects-purple text-aspects-purple-dark`,
+		actions: [
+			"Charm",
+			"Read",
+			"Deceive",
+			"Intimidate",
+			"Sneak",
+			{ name: "Darkness", label: "Aspect Art" },
+		],
 	},
 ]
 
 export function App() {
 	const cardGridRef = useRef<HTMLDivElement>(null)
 
-	const cardClass = tw`aspect-[2.5/3.5] h-70 rounded-xl border-4`
+	const cardClass = tw`aspect-[2.5/3.5] h-70 overflow-clip rounded-xl border-4`
 
 	return (
-		<main className="flex h-dvh flex-col items-center justify-center gap-4">
-			<div
-				ref={cardGridRef}
-				className={twMerge(
-					"grid grid-cols-[repeat(3,auto)] flex-wrap place-content-center gap-2 p-1",
-					"[--card-bg-base-color:0.85_0.23]",
-					"[--card-fg-base-color:0.4_0.1]",
-					"[--icon-col-width:--spacing(10)]",
-				)}
-			>
-				{cards.map((card) => (
-					<div
-						key={card.name}
-						className={twMerge(
-							cardClass,
-							"flex flex-col gap-7 pt-7 pr-4 text-shadow-black/10 text-shadow-sm",
-							card.className,
-						)}
-					>
-						<div className="flex items-center">
-							<div className="flex w-(--icon-col-width) justify-center">
-								<Icon
-									icon={card.icon}
-									className={twMerge(
-										"size-6 drop-shadow-black/20 drop-shadow-xs",
-										card.iconClassName,
-									)}
-								/>
-							</div>
-							<p className="flex-1 font-light text-2xl">{card.name}</p>
-						</div>
-
-						<div className="flex flex-col gap-6">
-							{[
-								{ icon: "lucide:sparkles", text: card.aura },
-								{ icon: "lucide:atom", text: card.material },
-								{ icon: "lucide:search", text: `Something ${card.found}` },
-								// { icon: "lucide:box", text: card.effect },
-							].map((row, index) => (
-								<div className="flex h-7 items-center" key={index}>
-									<div className="flex w-(--icon-col-width) justify-center">
-										<Icon
-											icon={row.icon}
-											className="size-5 drop-shadow-black/20 drop-shadow-xs"
-										/>
-									</div>
-									<p className="flex-1 whitespace-pre-wrap text-balance font-medium text-sm leading-[1.1]">
-										{row.text.slice(0, 1).toLocaleUpperCase() +
-											row.text.slice(1)}
-									</p>
-								</div>
-							))}
-						</div>
-					</div>
-				))}
-
+		<div className="py-8">
+			<main className="flex h-dvh flex-col items-center gap-4">
 				<div
+					ref={cardGridRef}
 					className={twMerge(
-						cardClass,
-						"-outline-offset-4 flex items-center justify-center border-none bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green text-black/45 outline-4 outline-black/60",
+						"grid grid-flow-col grid-rows-[repeat(6,1fr)] place-content-center gap-2 p-1",
+						"[--card-bg-base-color:0.85_0.23]",
+						"[--card-fg-base-color:0.4_0.1]",
+						"[--icon-col-width:--spacing(10)]",
 					)}
 				>
-					<Icon
-						icon="lucide:pentagon"
-						className="size-32 drop-shadow-black/20 drop-shadow-md"
-					/>
+					{aspect.map((aspect) =>
+						aspect.actions
+							.map((action) =>
+								typeof action === "string"
+									? { name: action, label: "Action" }
+									: action,
+							)
+							.map((action) => (
+								<div
+									key={`${aspect.name}-${action.name}`}
+									className={twMerge(
+										cardClass,
+										"relative flex flex-col justify-center gap-5 text-shadow-black/10 text-shadow-sm uppercase",
+										aspect.className,
+									)}
+								>
+									<div className="absolute inset-0 bg-stripes opacity-4"></div>
+									<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
+
+									<div className="absolute top-0 left-0 p-1.5 opacity-50">
+										<Icon icon={aspect.icon} className="size-6" />
+									</div>
+									<div className="absolute bottom-0 left-0 p-1.5 opacity-50">
+										<Icon icon={aspect.icon} className="size-6" />
+									</div>
+									<div className="absolute top-0 right-0 p-1.5 opacity-50">
+										<Icon icon={aspect.icon} className="size-6" />
+									</div>
+									<div className="absolute right-0 bottom-0 p-1.5 opacity-50">
+										<Icon icon={aspect.icon} className="size-6" />
+									</div>
+
+									<div className="-translate-x-1/2 -rotate-90 absolute left-4 font-medium text-xs opacity-60">
+										{action.name}
+									</div>
+
+									{[
+										{ label: "Aspect", text: aspect.name },
+										{ label: action.label, text: action.name },
+										{ label: "Find Something", text: aspect.found },
+									].map((row, index) => (
+										<div
+											className="relative flex flex-col items-center"
+											key={index}
+										>
+											<h2 className="font-medium text-sm opacity-80">
+												{row.label}
+											</h2>
+											<p className="flex-1 text-balance font-medium text-xl">
+												{row.text}
+											</p>
+										</div>
+									))}
+								</div>
+							)),
+					)}
+
+					<div
+						className={twMerge(
+							cardClass,
+							"-outline-offset-4 relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60",
+							"bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green",
+							// "bg-fuchsia-300",
+						)}
+					>
+						<div className="absolute inset-0 bg-stripes opacity-4"></div>
+						<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
+						<Icon
+							icon="lucide:pentagon"
+							className="size-32 drop-shadow-black/20 drop-shadow-md"
+						/>
+					</div>
 				</div>
-			</div>
 
-			<button
-				type="button"
-				className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
-				onClick={() => {
-					const subject = cardGridRef.current as HTMLElement
+				<button
+					type="button"
+					className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
+					onClick={() => {
+						const subject = cardGridRef.current as HTMLElement
+						const targetSize = 3000
 
-					toPng(subject, {
-						canvasWidth: subject.clientWidth * 2,
-						canvasHeight: subject.clientHeight * 2,
-					}).then((dataUrl) => {
-						const link = document.createElement("a")
-						link.download = "aspect-cards.png"
-						link.href = dataUrl
-						link.click()
-					})
-				}}
-			>
-				export
-			</button>
-		</main>
+						const scale = Math.min(
+							targetSize / subject.clientWidth,
+							targetSize / subject.clientHeight,
+						)
+
+						toPng(subject, {
+							canvasWidth: subject.clientWidth * scale,
+							canvasHeight: subject.clientHeight * scale,
+						}).then((dataUrl) => {
+							const link = document.createElement("a")
+							link.download = "aspect-cards.png"
+							link.href = dataUrl
+							link.click()
+						})
+					}}
+				>
+					export
+				</button>
+			</main>
+		</div>
 	)
 }

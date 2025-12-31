@@ -15,3 +15,24 @@
 	--color-aspects-purple: #C884FF;
 	--color-aspects-purple-dark: color-mix(in oklch, var(--color-aspects-purple), black 50%);
 }
+
+@utility bg-stripes {
+	--bg-stripes-primary: black;
+	--bg-stripes-secondary: transparent;
+	--stripe-size: 4px;
+	background: repeating-linear-gradient(
+		45deg,
+		var(--bg-stripes-primary),
+		var(--bg-stripes-primary) var(--stripe-size),
+		var(--bg-stripes-secondary) var(--stripe-size),
+		var(--bg-stripes-secondary) calc(var(--stripe-size) * 2)
+	);
+}
+
+@utility bg-stripes-primary-* {
+	--bg-stripes-primary: --value(--color- *);
+}
+
+@utility bg-stripes-secondary-* {
+	--bg-stripes-secondary: --value(--color- *);
+}
