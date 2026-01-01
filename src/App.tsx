@@ -58,7 +58,7 @@ const aspect: Aspect[] = [
 		icon: "mingcute:bling-line",
 		aura: "liberation, swiftness, flexibility",
 		material: "air, sound, acrobatics",
-		found: "unorthodox",
+		found: "curious",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
 		actions: [
@@ -127,8 +127,13 @@ export function App() {
 						aspect.actions
 							.map((action) =>
 								typeof action === "string"
-									? { name: action, label: "Action", icon: aspect.icon }
-									: action,
+									? {
+											name: action,
+											label: "Action",
+											icon: aspect.icon,
+											isArt: false,
+									  }
+									: { ...action, isArt: true },
 							)
 							.map((action) => (
 								<div
@@ -140,7 +145,10 @@ export function App() {
 									)}
 								>
 									<div className="absolute inset-0 bg-stripes opacity-4"></div>
-									<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
+									<div
+										className="absolute inset-0 bg-linear-to-t from-black/20 via-black/5 data-art:from-white/20 data-art:via-40% data-art:via-white/10"
+										// data-art={action.isArt || undefined}
+									></div>
 
 									<div className="absolute top-0 left-0 p-1.5 opacity-70">
 										<Icon icon={action.icon} className="size-6" />
@@ -155,9 +163,13 @@ export function App() {
 										<Icon icon={action.icon} className="size-6" />
 									</div>
 
-									<div className="-translate-x-1/2 -rotate-90 absolute left-4 font-medium text-xs opacity-80">
+									<div className="-translate-x-1/2 -rotate-90 absolute left-3.5 font-medium text-[11px] opacity-80">
 										{action.name}
 									</div>
+
+									{/* <div className="absolute top-2.5 self-center font-medium text-[11px] opacity-80">
+										{aspect.name}
+									</div> */}
 
 									{[
 										{ label: "Aspect", text: aspect.name },
