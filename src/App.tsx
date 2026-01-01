@@ -117,14 +117,14 @@ export function App() {
 				<div
 					ref={cardGridRef}
 					className={twMerge(
-						"grid grid-flow-col grid-rows-[repeat(6,1fr)] place-content-center gap-2 p-1",
+						"grid grid-flow-col grid-rows-[repeat(7,1fr)] place-content-center gap-2 p-1",
 						"[--card-bg-base-color:0.85_0.23]",
 						"[--card-fg-base-color:0.4_0.1]",
 						"[--icon-col-width:--spacing(10)]",
 					)}
 				>
 					{aspect.map((aspect) =>
-						aspect.actions
+						[...aspect.actions, "Any"]
 							.map((action) =>
 								typeof action === "string"
 									? {
