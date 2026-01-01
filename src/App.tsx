@@ -124,7 +124,8 @@ export function App() {
 					)}
 				>
 					{aspect.map((aspect, aspectIndex) =>
-						["Any", ...aspect.actions]
+						aspect.actions
+							.toSpliced(aspect.actions.length - 1, 0, "Any")
 							.map((action) =>
 								typeof action === "string"
 									? {
