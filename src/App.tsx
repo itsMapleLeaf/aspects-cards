@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { toPng } from "html-to-image"
-import { useRef } from "react"
+import { type CSSProperties, useRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 type Aspect = {
@@ -117,14 +117,14 @@ export function App() {
 				<div
 					ref={cardGridRef}
 					className={twMerge(
-						"grid grid-flow-col grid-rows-[repeat(7,1fr)] place-content-center gap-2 p-1",
+						"grid place-content-center gap-2 p-1",
 						"[--card-bg-base-color:0.85_0.23]",
 						"[--card-fg-base-color:0.4_0.1]",
 						"[--icon-col-width:--spacing(10)]",
 					)}
 				>
-					{aspect.map((aspect) =>
-						[...aspect.actions, "Any"]
+					{aspect.map((aspect, aspectIndex) =>
+						["Any", ...aspect.actions]
 							.map((action) =>
 								typeof action === "string"
 									? {
@@ -135,12 +135,18 @@ export function App() {
 									  }
 									: { ...action, isArt: true },
 							)
-							.map((action) => (
+							.map((action, actionIndex) => (
 								<div
 									key={`${aspect.name}-${action.name}`}
+									style={
+										{
+											"--row": aspectIndex + 1,
+											"--col": actionIndex + 1,
+										} as CSSProperties
+									}
 									className={twMerge(
 										cardClass,
-										"relative flex flex-col justify-center gap-5 text-shadow-black/10 text-shadow-sm uppercase",
+										"relative col-(--col) row-(--row) flex flex-col justify-center gap-5 text-shadow-black/10 text-shadow-sm uppercase",
 										aspect.className,
 									)}
 								>
