@@ -7,7 +7,7 @@ type Aspect = {
 	name: string
 	icon: string
 	aura: string
-	material: string
+	element: string[]
 	found: string
 	effect: string
 	className: string
@@ -22,87 +22,52 @@ const aspect: Aspect[] = [
 		name: "Animosity",
 		icon: "mingcute:sword-line",
 		aura: "rage, envy, drive",
-		material: "flame, heat, magma",
+		element: ["Fire", "Lightning"],
 		found: "dangerous",
 		effect: "Damage (+1 die)",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
-		actions: [
-			"Strike",
-			"Block",
-			"Exert",
-			"Intimidate",
-			"Endure",
-			{ name: "Fire", label: "Aspect Art", icon: "mingcute:fire-line" },
-		],
+		actions: ["Strike", "Block", "Exert", "Intimidate", "Endure"],
 		iconClassName: tw`-translate-y-px`,
 	},
 	{
 		name: "Connection",
 		icon: "mingcute:shield-shape-line",
 		aura: "peace, comfort, protection",
-		material: "water, ice, vapor",
+		element: ["Water", "Ice"],
 		found: "inviting",
 		effect: "Block (1d6)",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
-		actions: [
-			"Protect",
-			"Comfort",
-			"Empower",
-			"Restore",
-			"Locate",
-			{ name: "Water", label: "Aspect Art", icon: "mingcute:drop-line" },
-		],
+		actions: ["Protect", "Comfort", "Empower", "Restore", "Locate"],
 	},
 	{
 		name: "Freedom",
 		icon: "mingcute:bling-line",
 		aura: "liberation, swiftness, flexibility",
-		material: "air, sound, acrobatics",
+		element: ["Wind", "Sound"],
 		found: "curious",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
-		actions: [
-			"Evade",
-			"Dash",
-			"Balance",
-			"Endure",
-			"Sneak",
-			{ name: "Wind", label: "Aspect Art", icon: "mingcute:wind-line" },
-		],
+		actions: ["Evade", "Dash", "Balance", "Endure", "Sneak"],
 	},
 	{
 		name: "Wonder",
 		icon: "mingcute:compass-line",
 		aura: "knowledge, perception",
-		material: "lumen, healing, enhancement",
+		element: ["Light", "Healing"],
 		found: "valuable",
 		effect: "Heal (1d6)",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
-		actions: [
-			"Aim",
-			"Evaluate",
-			"Create",
-			"Restore",
-			"Locate",
-			{ name: "Light", label: "Aspect Art", icon: "mingcute:sun-line" },
-		],
+		actions: ["Aim", "Evaluate", "Create", "Restore", "Locate"],
 	},
 	{
 		name: "Tension",
 		icon: "mingcute:heart-crack-line",
 		aura: "suspicion, mistrust, manipulation",
-		material: "umbra, illusions, psychology",
+		element: ["Darkness", "Mind"],
 		found: "unsettling",
 		effect: "Evade (2d6)",
 		className: tw`bg-aspects-purple text-aspects-purple-dark`,
-		actions: [
-			"Charm",
-			"Read",
-			"Deceive",
-			"Intimidate",
-			"Sneak",
-			{ name: "Darkness", label: "Aspect Art", icon: "mingcute:moon-line" },
-		],
+		actions: ["Charm", "Read", "Deceive", "Intimidate", "Sneak"],
 	},
 ]
 
@@ -124,8 +89,7 @@ export function App() {
 					)}
 				>
 					{aspect.map((aspect, aspectIndex) =>
-						aspect.actions
-							.toSpliced(aspect.actions.length - 1, 0, "Any")
+						[...aspect.actions, "Any"]
 							.map((action) =>
 								typeof action === "string"
 									? {
@@ -147,7 +111,7 @@ export function App() {
 									}
 									className={twMerge(
 										cardClass,
-										"relative col-(--col) row-(--row) flex flex-col justify-center gap-5 text-shadow-black/10 text-shadow-sm uppercase",
+										"relative col-(--col) row-(--row) flex flex-col justify-center gap-3 text-shadow-black/10 text-shadow-sm uppercase",
 										aspect.className,
 									)}
 								>
@@ -170,8 +134,14 @@ export function App() {
 										<Icon icon={action.icon} className="size-6" />
 									</div>
 
-									<div className="-translate-x-1/2 -rotate-90 absolute left-3.5 font-medium text-[11px] opacity-80">
+									{/* <div className="absolute top-2.5 left-1/2 -translate-x-1/2 font-medium text-[11px] opacity-80">
+										{aspect.name}
+									</div> */}
+									<div className="absolute left-3.5 -translate-x-1/2 -rotate-90 font-medium text-[11px] opacity-80">
 										{action.name}
+									</div>
+									<div className="absolute right-3.5 translate-x-1/2 rotate-90 font-medium text-[11px] opacity-80">
+										{aspect.name}
 									</div>
 
 									{/* <div className="absolute top-2.5 self-center font-medium text-[11px] opacity-80">
@@ -179,18 +149,19 @@ export function App() {
 									</div> */}
 
 									{[
-										{ label: "Aspect", text: aspect.name },
+										// { label: "Aspect", text: aspect.name },
 										{ label: action.label, text: action.name },
+										{ label: "Art", text: aspect.element.join("\n") },
 										{ label: "Find Something", text: aspect.found },
 									].map((row, index) => (
 										<div
-											className="relative flex flex-col items-center"
+											className="relative flex scale-95 flex-col items-center text-center"
 											key={index}
 										>
 											<h2 className="font-medium text-sm opacity-80">
 												{row.label}
 											</h2>
-											<p className="flex-1 text-balance font-medium text-xl">
+											<p className="flex-1 whitespace-pre-line text-balance font-medium text-xl">
 												{row.text}
 											</p>
 										</div>
@@ -202,7 +173,7 @@ export function App() {
 					<div
 						className={twMerge(
 							cardClass,
-							"-outline-offset-4 relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60",
+							"relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
 							"bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green",
 							// "bg-fuchsia-300",
 						)}

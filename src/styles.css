@@ -30,9 +30,9 @@
 }
 
 @utility bg-stripes-primary-* {
-	--bg-stripes-primary: --value(--color- *);
+	--bg-stripes-primary: --value(--color-*);
 }
 
 @utility bg-stripes-secondary-* {
-	--bg-stripes-secondary: --value(--color- *);
+	--bg-stripes-secondary: --value(--color-*);
 }
