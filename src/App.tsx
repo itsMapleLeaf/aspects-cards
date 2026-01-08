@@ -137,7 +137,7 @@ export function App() {
 									{/* <div className="absolute top-2.5 left-1/2 -translate-x-1/2 font-medium text-[11px] opacity-80">
 										{aspect.name}
 									</div> */}
-									<div className="absolute left-3.5 -translate-x-1/2 -rotate-90 font-medium text-[11px] opacity-80">
+									<div className="-translate-x-1/2 -rotate-90 absolute left-3.5 font-medium text-[11px] opacity-80">
 										{action.name}
 									</div>
 									<div className="absolute right-3.5 translate-x-1/2 rotate-90 font-medium text-[11px] opacity-80">
@@ -173,7 +173,7 @@ export function App() {
 					<div
 						className={twMerge(
 							cardClass,
-							"relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
+							"-outline-offset-4 relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60",
 							"bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green",
 							// "bg-fuchsia-300",
 						)}
