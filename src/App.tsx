@@ -26,18 +26,17 @@ const aspect: Aspect[] = [
 		found: "dangerous",
 		effect: "Damage (+1 die)",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
-		actions: ["Strike", "Block", "Exert", "Intimidate", "Endure"],
-		iconClassName: tw`-translate-y-px`,
+		actions: ["Strike", "Block", "Push", "Throw", "Endure", "Empower"],
 	},
 	{
 		name: "Connection",
 		icon: "mingcute:shield-shape-line",
 		aura: "peace, comfort, protection",
-		element: ["Water", "Ice"],
+		element: ["Ice", "Healing"],
 		found: "inviting",
 		effect: "Block (1d6)",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
-		actions: ["Protect", "Comfort", "Empower", "Restore", "Locate"],
+		actions: ["Protect", "Comfort", "Charm", "Read", "Empower", "Restore"],
 	},
 	{
 		name: "Freedom",
@@ -47,17 +46,17 @@ const aspect: Aspect[] = [
 		found: "curious",
 		effect: "Reroll 1 die",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
-		actions: ["Evade", "Dash", "Balance", "Endure", "Sneak"],
+		actions: ["Dash", "Aim", "Sneak", "Deflect", "Finesse", "Evade"],
 	},
 	{
 		name: "Wonder",
 		icon: "mingcute:compass-line",
 		aura: "knowledge, perception",
-		element: ["Light", "Healing"],
+		element: ["Light", "Guidance"],
 		found: "valuable",
 		effect: "Heal (1d6)",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
-		actions: ["Aim", "Evaluate", "Create", "Restore", "Locate"],
+		actions: ["Evaluate", "Operate", "Create", "Locate", "Read", "Restore"],
 	},
 	{
 		name: "Tension",
@@ -67,7 +66,7 @@ const aspect: Aspect[] = [
 		found: "unsettling",
 		effect: "Evade (2d6)",
 		className: tw`bg-aspects-purple text-aspects-purple-dark`,
-		actions: ["Charm", "Read", "Deceive", "Intimidate", "Sneak"],
+		actions: ["Deceive", "Dominate", "Endure", "Deflect", "Evade", "Finesse"],
 	},
 ]
 
@@ -97,7 +96,7 @@ export function App() {
 											label: "Action",
 											icon: aspect.icon,
 											isArt: false,
-									  }
+										}
 									: { ...action, isArt: true },
 							)
 							.map((action, actionIndex) => (
