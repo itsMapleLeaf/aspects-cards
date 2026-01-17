@@ -12,7 +12,7 @@ type Aspect = {
 	effect: string
 	className: string
 	iconClassName?: string
-	actions: (string | { name: string; label: string; icon: string })[]
+	actions: string[]
 }
 
 const tw = String.raw
@@ -29,14 +29,14 @@ const aspect: Aspect[] = [
 		actions: ["Strike", "Block", "Push", "Throw", "Endure", "Empower"],
 	},
 	{
-		name: "Connection",
-		icon: "mingcute:shield-shape-line",
-		aura: "peace, comfort, protection",
-		element: ["Ice", "Healing"],
-		found: "inviting",
-		effect: "Block (1d6)",
+		name: "Wonder",
+		icon: "mingcute:compass-line",
+		aura: "knowledge, perception",
+		element: ["Water", "Ice"],
+		found: "valuable",
+		effect: "Heal (1d6)",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
-		actions: ["Protect", "Comfort", "Charm", "Read", "Empower", "Restore"],
+		actions: ["Evaluate", "Operate", "Create", "Locate", "Read", "Restore"],
 	},
 	{
 		name: "Freedom",
@@ -49,14 +49,14 @@ const aspect: Aspect[] = [
 		actions: ["Dash", "Aim", "Sneak", "Deflect", "Finesse", "Evade"],
 	},
 	{
-		name: "Wonder",
-		icon: "mingcute:compass-line",
-		aura: "knowledge, perception",
-		element: ["Light", "Guidance"],
-		found: "valuable",
-		effect: "Heal (1d6)",
+		name: "Connection",
+		icon: "mingcute:shield-shape-line",
+		aura: "peace, comfort, protection",
+		element: ["Healing", "Guidance"],
+		found: "inviting",
+		effect: "Block (1d6)",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
-		actions: ["Evaluate", "Operate", "Create", "Locate", "Read", "Restore"],
+		actions: ["Protect", "Comfort", "Charm", "Read", "Empower", "Restore"],
 	},
 	{
 		name: "Tension",
@@ -88,17 +88,18 @@ export function App() {
 					)}
 				>
 					{aspect.map((aspect, aspectIndex) =>
-						[...aspect.actions, "Any"]
-							.map((action) =>
-								typeof action === "string"
-									? {
-											name: action,
-											label: "Action",
-											icon: aspect.icon,
-											isArt: false,
-										}
-									: { ...action, isArt: true },
-							)
+						[
+							...aspect.actions.sort((a, b) =>
+								a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()),
+							),
+							"Any",
+						]
+							.map((action) => ({
+								name: action,
+								label: `${aspect.name} Skill`,
+								icon: aspect.icon,
+								isArt: false,
+							}))
 							.map((action, actionIndex) => (
 								<div
 									key={`${aspect.name}-${action.name}`}
