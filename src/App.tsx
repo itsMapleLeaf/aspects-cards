@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge"
 
 const tw = String.raw
 
-type Aspect = {
+type AspectCard = {
 	name: string
 	icon: string
 	aura: string
@@ -17,7 +17,7 @@ type Aspect = {
 	actions: string[]
 }
 
-const aspects: Aspect[] = [
+const aspects: AspectCard[] = [
 	{
 		name: "Animosity",
 		icon: "mingcute:sword-line",
@@ -70,14 +70,14 @@ const aspects: Aspect[] = [
 	},
 ]
 
-type Art = {
+type NatureArtCard = {
 	name: string
 	description: string
 	icon: string
 	className: string
 }
 
-const arts: Art[] = [
+const arts: NatureArtCard[] = [
 	{
 		name: "Ember",
 		description: "Conjure flame and generate heat",
@@ -285,7 +285,7 @@ function AspectSkillCard({
 	aspect,
 	action,
 }: {
-	aspect: Aspect
+	aspect: AspectCard
 	action: string
 }) {
 	return (
