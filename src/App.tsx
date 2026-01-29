@@ -183,41 +183,51 @@ export function App() {
 			assert(splitCardGridRef.current, "splitCardGridRef.current")
 			assert(previewRef.current, "previewRef.current")
 
-			try {
-				await Promise.allSettled([
-					saveImage(
-						combinedCardGridRef.current,
-						"aspect-cards-instincts.png",
-						directoryHandle,
-					),
-					saveImage(
-						splitCardGridRef.current,
-						"aspect-cards-instincts-actions.png",
-						directoryHandle,
-					),
-					saveImage(
-						previewRef.current,
-						"aspect-cards-preview.png",
-						directoryHandle,
-					),
-					directoryHandle
-						.getDirectoryHandle("cards", { create: true })
-						.then((individualImagesDir) =>
-							[...ensure(combinedCardGridRef.current).children].map(
-								(el, index) =>
-									saveImage(
-										el as HTMLElement,
-										`card-${index}.png`,
-										individualImagesDir,
-									),
-							),
+			const results = await Promise.allSettled([
+				saveImage(
+					combinedCardGridRef.current,
+					"aspect-cards-instincts.png",
+					directoryHandle,
+				),
+				saveImage(
+					splitCardGridRef.current,
+					"aspect-cards-instincts-actions.png",
+					directoryHandle,
+				),
+				saveImage(
+					previewRef.current,
+					"aspect-cards-preview.png",
+					directoryHandle,
+				),
+				directoryHandle
+					.getDirectoryHandle("cards", { create: true })
+					.then((individualImagesDir) =>
+						[...ensure(combinedCardGridRef.current).children].map(
+							(el, index) => {
+								assert(
+									el instanceof HTMLElement,
+									`element ${index} is not an HTMLElement`,
+								)
+
+								const baseName = el.dataset.imageName || `card`
+
+								return saveImage(
+									el as HTMLElement,
+									`${String(index).padStart(2, "0")}_${baseName}.png`,
+									individualImagesDir,
+								)
+							},
 						),
-				])
-			} catch (error) {
-				if (error instanceof Error && error.name === "AbortError") {
-					return
-				}
-				alert(`Error: ${error}`)
+					),
+			])
+
+			const rejections = results.filter(
+				(result) => result.status === "rejected",
+			)
+
+			if (rejections.length > 0) {
+				console.error(rejections)
+				alert(`${rejections.length} errors found; check console for details`)
 			}
 		},
 		null,
@@ -241,6 +251,7 @@ export function App() {
 
 	const cardBack = (
 		<div
+			data-image-name="back"
 			className={twMerge(
 				cardClass,
 				"relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
@@ -348,6 +359,9 @@ function AspectInstinctCard({
 			// 	// { label: "Art", text: aspect.element.join("\n") },
 			// 	{ label: "Find Something", text: aspect.found },
 			// ]}
+			data-image-name={(
+				aspect.name + (action ? `-${action}` : "")
+			).toLowerCase()}
 		>
 			<div className="flex flex-col items-center gap-4 text-center">
 				<section>
@@ -404,6 +418,7 @@ function Card({
 	sections,
 	description,
 	children,
+	...props
 }: {
 	className?: string
 	icon?: string
@@ -417,6 +432,7 @@ function Card({
 }) {
 	return (
 		<div
+			{...props}
 			className={twMerge(
 				cardClass,
 				"relative flex flex-col items-center justify-center gap-3 text-center text-shadow-black/10 text-shadow-sm uppercase",
