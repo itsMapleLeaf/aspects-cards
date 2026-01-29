@@ -34,7 +34,7 @@ const aspects: AspectCard[] = [
 		actions: ["Read", "Persuade", "Deceive"],
 		icon: "mingcute:eye-line",
 		perception: "a lead",
-		className: tw`bg-aspects-purple text-aspects-purple-dark`,
+		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
 	},
 	{
 		name: "Evasion",
