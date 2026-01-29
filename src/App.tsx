@@ -20,7 +20,9 @@ type AspectCard = {
 	arts: string[]
 }
 
-const aspects: AspectCard[] = [
+type SkillName = (typeof aspects)[number]["actions"][number]
+
+const aspects = [
 	{
 		name: "Aggression",
 		description: "violence, brute force, athletic prowess",
@@ -57,14 +59,14 @@ const aspects: AspectCard[] = [
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
 		arts: ["Water", "Healing"],
 	},
-]
+] as const satisfies AspectCard[]
 
 type NatureArtCard = {
 	name: string
 	description: string
 	icon: string
 	className: string
-	skill: string
+	skill: SkillName
 }
 
 const arts: NatureArtCard[] = [
