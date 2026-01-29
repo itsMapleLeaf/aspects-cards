@@ -121,7 +121,7 @@ const arts: NatureArtCard[] = [
 	},
 	{
 		name: "Psyche",
-		description: "Manipulate the psyche of others",
+		description: "Query and manipulate the psyche of others",
 		icon: "mingcute:thought-line",
 		className: tw`bg-indigo-800 text-indigo-200 saturate-60`,
 		skill: "Intuit",
