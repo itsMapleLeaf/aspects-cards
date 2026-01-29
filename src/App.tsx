@@ -59,44 +59,93 @@ type NatureArtCard = {
 	description: string
 	icon: string
 	className: string
+	skill: string
 }
 
 const arts: NatureArtCard[] = [
+	{
+		name: "Life",
+		description: "Alter vitality through touch",
+		icon: "mingcute:heartbeat-2-line",
+		className: tw`bg-pink-800 text-pink-200 saturate-60`,
+		skill: "Restore",
+	},
 	{
 		name: "Ember",
 		description: "Conjure flame and generate heat",
 		icon: "mingcute:flame-line",
 		className: tw`bg-red-800 text-red-200 saturate-60`,
+		skill: "Strike",
 	},
 	{
-		name: "Flow",
-		description: "Shape and propel natural liquids",
-		icon: "mingcute:drop-line",
-		className: tw`bg-blue-800 text-blue-200 saturate-60`,
+		name: "Spark",
+		description: "Summon and direct lightinng",
+		icon: "mingcute:lightning-line",
+		className: tw`bg-yellow-800 text-yellow-200 saturate-60`,
+		skill: "Dash",
+	},
+	{
+		name: "Verdance",
+		description: "Commune with and alter plant life",
+		icon: "mingcute:leaf-line",
+		className: tw`bg-green-800 text-green-200 saturate-60`,
+		skill: "Persuade",
 	},
 	{
 		name: "Tempest",
 		description: "Control wind and weather",
 		icon: "mingcute:cloud-windy-line",
 		className: tw`bg-teal-800 text-teal-200 saturate-60`,
+		skill: "Evade",
 	},
 	{
-		name: "Spark",
-		description: "Summon and direct electrical energy",
-		icon: "mingcute:lightning-line",
-		className: tw`bg-yellow-800 text-yellow-200 saturate-60`,
+		name: "Resonance",
+		description: "Amplify, dampen, and project noise",
+		icon: "mingcute:voice-line",
+		className: tw`bg-cyan-800 text-cyan-200 saturate-60`,
+		skill: "Sneak",
+	},
+	{
+		name: "Flow",
+		description: "Shape and propel natural liquids",
+		icon: "mingcute:drop-line",
+		className: tw`bg-blue-800 text-blue-200 saturate-60`,
+		skill: "Finesse",
+	},
+	{
+		name: "Psyche",
+		description: "Manipulate the psyche of others",
+		icon: "mingcute:brain-line",
+		className: tw`bg-indigo-800 text-indigo-200 saturate-60`,
+		skill: "Charm",
+	},
+	{
+		name: "Void",
+		description: "Manifest pure featureless darkness",
+		icon: "mingcute:moon-line",
+		className: tw`bg-purple-800 text-purple-200 saturate-30`,
+		skill: "Deceive",
+	},
+	{
+		name: "Nebula",
+		description: "Shape the fabric of reality",
+		icon: "mingcute:planet-line",
+		className: tw`bg-stone-800 text-stone-200 saturate-60`,
+		skill: "Read",
 	},
 	{
 		name: "Stone",
 		description: "Shift rocks and bend metals",
 		icon: "mingcute:cloud-windy-line",
 		className: tw`bg-neutral-700 text-neutral-200 saturate-60`,
+		skill: "Hold",
 	},
 	{
-		name: "Verdance",
-		description: "Manipulate or speak with plantlife",
-		icon: "mingcute:leaf-line",
-		className: tw`bg-green-800 text-green-200 saturate-60`,
+		name: "Frost",
+		description: "Freeze moisture and sculpt ice",
+		icon: "mingcute:snow-line",
+		className: tw`bg-slate-700 text-slate-100`,
+		skill: "Protect",
 	},
 	// {
 	// 	name: "Lumen",
@@ -104,36 +153,6 @@ const arts: NatureArtCard[] = [
 	// 	icon: "mingcute:sun-line",
 	// 	className: tw`bg-yellow-800 text-yellow-200 saturate-60`,
 	// },
-	{
-		name: "Void",
-		description: "Manifest pure featureless darkness",
-		icon: "mingcute:moon-line",
-		className: tw`bg-purple-800 text-purple-200 saturate-30`,
-	},
-	{
-		name: "Frost",
-		description: "Freeze moisture and sculpt ice",
-		icon: "mingcute:snow-line",
-		className: tw`bg-slate-700 text-slate-100`,
-	},
-	{
-		name: "Resonance",
-		description: "Amplify, dampen, and project noise",
-		icon: "mingcute:voice-line",
-		className: tw`bg-cyan-800 text-cyan-200 saturate-60`,
-	},
-	{
-		name: "Psyche",
-		description: "Manipulate the psyche of others",
-		icon: "mingcute:brain-line",
-		className: tw`bg-indigo-800 text-indigo-200 saturate-60`,
-	},
-	{
-		name: "Nebula",
-		description: "Shape the fabric of reality",
-		icon: "mingcute:planet-line",
-		className: tw`bg-stone-800 text-stone-200 saturate-60`,
-	},
 	// {
 	// 	name: "Healing",
 	// 	description: "Mend wounds and restore vitality",
@@ -267,6 +286,31 @@ export function App() {
 		</div>
 	)
 
+	const natureArtCards = arts.map((art) => (
+		<Card
+			key={art.name}
+			className={art.className}
+			icon={art.icon}
+			// description={art.description}
+			// sections={[
+			// 	{ label: "Nature Art", text: art.name },
+			// 	{ label: "Skill", text: art.skill },
+			// ]}
+		>
+			<div className="flex flex-col gap-4">
+				<section className="flex min-h-20 flex-col">
+					<h2 className="whitespace-pre-line text-balance font-medium text-xl">
+						{art.name}
+					</h2>
+					<p className="flex flex-1 flex-col justify-center px-6 font-medium text-sm leading-tight opacity-90">
+						{art.description}
+					</p>
+				</section>
+				<CardSection heading="Skill" body={art.skill} />
+			</div>
+		</Card>
+	))
+
 	return (
 		<main className="grid min-h-dvh w-fit justify-items-start gap-4 p-4">
 			<div className="flex h-10 items-stretch gap-2">
@@ -305,10 +349,14 @@ export function App() {
 				))}
 			</div>
 
-			<div className="flex gap-2" ref={combinedCardGridRef}>
+			<div
+				className="grid grid-cols-[repeat(4,1fr)] gap-2"
+				ref={combinedCardGridRef}
+			>
 				{aspects.map((aspect) => (
 					<AspectInstinctCard key={aspect.name} aspect={aspect} />
 				))}
+				{natureArtCards}
 				{cardBack}
 			</div>
 
@@ -330,6 +378,7 @@ export function App() {
 						/>
 					)),
 				)}
+				{/* {natureArtCards} */}
 				{cardBack}
 			</div>
 		</main>
@@ -482,25 +531,40 @@ function Card({
 			)}
 
 			{sections?.map((section, index) => (
-				<div
-					className="relative flex scale-95 flex-col items-center text-center"
-					key={index}
-				>
-					<h2 className="font-medium text-sm opacity-80">{section.label}</h2>
-					<p className="flex-1 whitespace-pre-line text-balance font-medium text-xl">
-						{section.text}
-					</p>
-				</div>
+				<CardSection key={index} heading={section.label} body={section.text} />
 			))}
 
-			{description && (
-				<p className="flex h-16 items-center text-balance px-5 leading-tight">
-					{description}
-				</p>
-			)}
+			{description && <CardDescription>{description}</CardDescription>}
 
 			{children}
 		</div>
+	)
+}
+
+function CardSection({
+	heading,
+	body,
+}: {
+	heading: ReactNode
+	body: ReactNode
+}) {
+	return (
+		<section>
+			<h2 className="px-6 font-medium text-sm leading-tight opacity-75">
+				{heading}
+			</h2>
+			<p className="whitespace-pre-line text-balance font-medium leading-tight">
+				{body}
+			</p>
+		</section>
+	)
+}
+
+function CardDescription({ children }: { children: React.ReactNode }) {
+	return (
+		<p className="flex h-16 items-center text-balance px-5 leading-tight">
+			{children}
+		</p>
 	)
 }
 
