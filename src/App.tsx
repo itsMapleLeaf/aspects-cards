@@ -36,7 +36,7 @@ const aspects = [
 		name: "Influence",
 		description: "social leverage, status, invisible pressure",
 		actions: ["Intuit", "Persuade", "Deceive"],
-		icon: "mingcute:eye-line",
+		icon: "mingcute:star-line",
 		perception: "a lead",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
 		arts: ["Reality", "Mind"],
