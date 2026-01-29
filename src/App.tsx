@@ -1,10 +1,11 @@
 import { Icon } from "@iconify/react"
+import { assert } from "es-toolkit"
 import * as htmlToImage from "html-to-image"
 import {
 	type FileSystemDirectoryHandle,
 	showDirectoryPicker,
 } from "native-file-system-adapter"
-import { type ReactNode, useRef, useState } from "react"
+import { type ReactNode, useActionState, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 const tw = String.raw
@@ -24,8 +25,16 @@ const aspects: AspectCard[] = [
 		description: "violence, brute force, athletic prowess",
 		actions: ["Strike", "Hold", "Dash"],
 		icon: "mingcute:sword-line",
-		perception: "a weakness",
+		perception: "an ending",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
+	},
+	{
+		name: "Influence",
+		description: "social leverage, status, invisible pressure",
+		actions: ["Read", "Persuade", "Deceive"],
+		icon: "mingcute:eye-line",
+		perception: "a lead",
+		className: tw`bg-aspects-purple text-aspects-purple-dark`,
 	},
 	{
 		name: "Evasion",
@@ -33,22 +42,14 @@ const aspects: AspectCard[] = [
 		actions: ["Evade", "Sneak", "Finesse"],
 		icon: "mingcute:forbid-circle-line",
 		perception: "a way out",
-		className: tw`bg-aspects-purple text-aspects-purple-dark`,
-	},
-	{
-		name: "Influence",
-		description: "social leverage, status, invisible pressure",
-		actions: ["Read", "Persuade", "Deceive"],
-		icon: "mingcute:eye-line",
-		perception: "an opportunity",
-		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
+		className: tw`bg-aspects-green text-aspects-green-dark`,
 	},
 	{
 		name: "Connection",
 		description: "bonding, protection, safety",
 		actions: ["Protect", "Restore", "Charm"],
 		icon: "mingcute:shield-shape-line",
-		perception: "safety",
+		perception: "a way in",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
 	},
 ]
@@ -176,23 +177,67 @@ export function App() {
 		await writer.close()
 	}
 
-	const saveAll = async (directoryHandle: FileSystemDirectoryHandle) => {
-		try {
-			await saveImage(
-				combinedCardGridRef.current as HTMLElement,
-				"aspect-cards-instincts.png",
-				directoryHandle,
-			)
-			await saveImage(
-				previewRef.current as HTMLElement,
-				"aspect-cards-preview.png",
-				directoryHandle,
-			)
-			alert("Saved successfully")
-		} catch (error) {
-			alert(`Error: ${error}`)
-		}
-	}
+	const [_saveAllState, saveAll, saveAllPending] = useActionState(
+		async (_: unknown, directoryHandle: FileSystemDirectoryHandle) => {
+			assert(combinedCardGridRef.current, "combinedCardGridRef.current")
+			assert(splitCardGridRef.current, "splitCardGridRef.current")
+			assert(previewRef.current, "previewRef.current")
+
+			try {
+				await Promise.allSettled([
+					saveImage(
+						combinedCardGridRef.current,
+						"aspect-cards-instincts.png",
+						directoryHandle,
+					),
+					saveImage(
+						splitCardGridRef.current,
+						"aspect-cards-instincts-actions.png",
+						directoryHandle,
+					),
+					saveImage(
+						previewRef.current,
+						"aspect-cards-preview.png",
+						directoryHandle,
+					),
+					directoryHandle
+						.getDirectoryHandle("cards", { create: true })
+						.then((individualImagesDir) =>
+							[...ensure(combinedCardGridRef.current).children].map(
+								(el, index) =>
+									saveImage(
+										el as HTMLElement,
+										`card-${index}.png`,
+										individualImagesDir,
+									),
+							),
+						),
+				])
+			} catch (error) {
+				if (error instanceof Error && error.name === "AbortError") {
+					return
+				}
+				alert(`Error: ${error}`)
+			}
+		},
+		null,
+	)
+
+	const [_saveToDirectoryState, saveToDirectory, saveToDirectoryPending] =
+		useActionState(async (_: unknown) => {
+			try {
+				const dir = await showDirectoryPicker({
+					mode: "readwrite",
+				} as any)
+				setDirectoryHandle(dir)
+				saveAll(dir)
+			} catch (error) {
+				if (error instanceof Error && error.name === "AbortError") {
+					return
+				}
+				alert(`Error: ${error}`)
+			}
+		}, null)
 
 	const cardBack = (
 		<div
@@ -212,30 +257,34 @@ export function App() {
 	)
 
 	return (
-		<main className="flex h-dvh flex-col items-start gap-4 p-4">
-			<div className="flex gap-2">
-				<button
-					type="button"
-					className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
-					onClick={async () => {
-						const dir = await showDirectoryPicker({
-							mode: "readwrite",
-						} as any)
-						setDirectoryHandle(dir)
-						await saveAll(dir)
-					}}
-				>
-					choose directory
-				</button>
-
-				{directoryHandle && (
-					<button
-						type="button"
-						className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
-						onClick={() => saveAll(directoryHandle)}
-					>
-						save
-					</button>
+		<main className="grid min-h-dvh w-fit justify-items-start gap-4 p-4">
+			<div className="flex h-10 items-stretch gap-2">
+				{saveToDirectoryPending || saveAllPending ? (
+					<Icon
+						icon="mingcute:loading-3-fill"
+						className="size-8 animate-spin self-center"
+					/>
+				) : (
+					<>
+						{directoryHandle && (
+							<form action={() => saveAll(directoryHandle)}>
+								<button
+									type="submit"
+									className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
+								>
+									save
+								</button>
+							</form>
+						)}
+						<form action={saveToDirectory}>
+							<button
+								type="submit"
+								className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
+							>
+								choose directory
+							</button>
+						</form>
+					</>
 				)}
 			</div>
 
@@ -270,7 +319,6 @@ export function App() {
 						/>
 					)),
 				)}
-
 				{cardBack}
 			</div>
 		</main>
@@ -438,4 +486,11 @@ function Card({
 			{children}
 		</div>
 	)
+}
+
+const ensure = <T,>(value: T, message: string = "value is nullish") => {
+	if (value == null) {
+		throw new Error(message)
+	}
+	return value
 }
