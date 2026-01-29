@@ -35,7 +35,7 @@ const aspects = [
 	{
 		name: "Influence",
 		description: "social leverage, status, invisible pressure",
-		actions: ["Read", "Persuade", "Deceive"],
+		actions: ["Intuit", "Persuade", "Deceive"],
 		icon: "mingcute:eye-line",
 		perception: "a lead",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
@@ -122,9 +122,9 @@ const arts: NatureArtCard[] = [
 	{
 		name: "Psyche",
 		description: "Manipulate the psyche of others",
-		icon: "mingcute:brain-line",
+		icon: "mingcute:thought-line",
 		className: tw`bg-indigo-800 text-indigo-200 saturate-60`,
-		skill: "Read",
+		skill: "Intuit",
 	},
 	{
 		name: "Void",
