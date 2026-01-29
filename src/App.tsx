@@ -184,6 +184,11 @@ export function App() {
 				directoryHandle,
 			)
 			await saveImage(
+				splitCardGridRef.current as HTMLElement,
+				"aspect-cards-instincts-split.png",
+				directoryHandle,
+			)
+			await saveImage(
 				previewRef.current as HTMLElement,
 				"aspect-cards-preview.png",
 				directoryHandle,
