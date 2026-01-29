@@ -17,16 +17,18 @@ type AspectCard = {
 	className: string
 	icon: string
 	perception: string
+	arts: string[]
 }
 
 const aspects: AspectCard[] = [
 	{
 		name: "Aggression",
 		description: "violence, brute force, athletic prowess",
-		actions: ["Strike", "Hold", "Dash"],
+		actions: ["Strike", "Exert", "Dash"],
 		icon: "mingcute:sword-line",
 		perception: "an ending",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
+		arts: ["Fire", "Lightning"],
 	},
 	{
 		name: "Influence",
@@ -35,6 +37,7 @@ const aspects: AspectCard[] = [
 		icon: "mingcute:eye-line",
 		perception: "a lead",
 		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
+		arts: ["Reality", "Mind"],
 	},
 	{
 		name: "Evasion",
@@ -43,6 +46,7 @@ const aspects: AspectCard[] = [
 		icon: "mingcute:forbid-circle-line",
 		perception: "a way out",
 		className: tw`bg-aspects-green text-aspects-green-dark`,
+		arts: ["Wind", "Sound"],
 	},
 	{
 		name: "Connection",
@@ -51,6 +55,7 @@ const aspects: AspectCard[] = [
 		icon: "mingcute:shield-shape-line",
 		perception: "a way in",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
+		arts: ["Water", "Healing"],
 	},
 ]
 
@@ -110,14 +115,14 @@ const arts: NatureArtCard[] = [
 		description: "Shape and propel natural liquids",
 		icon: "mingcute:drop-line",
 		className: tw`bg-blue-800 text-blue-200 saturate-60`,
-		skill: "Finesse",
+		skill: "Charm",
 	},
 	{
 		name: "Psyche",
 		description: "Manipulate the psyche of others",
 		icon: "mingcute:brain-line",
 		className: tw`bg-indigo-800 text-indigo-200 saturate-60`,
-		skill: "Charm",
+		skill: "Read",
 	},
 	{
 		name: "Void",
@@ -131,14 +136,14 @@ const arts: NatureArtCard[] = [
 		description: "Shape the fabric of reality",
 		icon: "mingcute:planet-line",
 		className: tw`bg-stone-800 text-stone-200 saturate-60`,
-		skill: "Read",
+		skill: "Finesse",
 	},
 	{
 		name: "Stone",
 		description: "Shift rocks and bend metals",
 		icon: "mingcute:cloud-windy-line",
 		className: tw`bg-neutral-700 text-neutral-200 saturate-60`,
-		skill: "Hold",
+		skill: "Exert",
 	},
 	{
 		name: "Frost",
@@ -161,7 +166,7 @@ const arts: NatureArtCard[] = [
 	// },
 ]
 
-const cardClass = tw`aspect-[2.5/3.5] h-70 overflow-clip rounded-xl border-4`
+const cardClass = tw`aspect-[2.5/3.5] h-75 overflow-clip rounded-xl border-4`
 
 export function App() {
 	const combinedCardGridRef = useRef<HTMLDivElement>(null)
@@ -291,6 +296,7 @@ export function App() {
 			key={art.name}
 			className={art.className}
 			icon={art.icon}
+			data-image-name={art.name.toLocaleLowerCase()}
 			// description={art.description}
 			// sections={[
 			// 	{ label: "Nature Art", text: art.name },
@@ -373,8 +379,12 @@ export function App() {
 					].map((action) => (
 						<AspectInstinctCard
 							key={`${aspect.name}-${action}`}
-							aspect={aspect}
+							aspect={{
+								...aspect,
+								description: "",
+							}}
 							action={action}
+							arts={aspect.arts}
 						/>
 					)),
 				)}
@@ -388,9 +398,11 @@ export function App() {
 function AspectInstinctCard({
 	aspect,
 	action,
+	arts,
 }: {
 	aspect: AspectCard
 	action?: string
+	arts?: string[]
 }) {
 	return (
 		<Card
@@ -398,8 +410,8 @@ function AspectInstinctCard({
 			icon={aspect.icon}
 			// topLabel={aspect.name}
 			// bottomLabel={aspect.name}
-			// leftLabel={aspect.name}
-			// rightLabel={aspect.name}
+			leftLabel={action}
+			rightLabel={action}
 			// leftLabel={action}
 			// rightLabel={action}
 			// sections={[
@@ -413,26 +425,21 @@ function AspectInstinctCard({
 			).toLowerCase()}
 		>
 			<div className="flex flex-col items-center gap-4 text-center">
-				<section>
-					<h2 className="whitespace-pre-line text-balance font-medium text-xl">
+				<section className="">
+					<h2 className="mb-0.5 whitespace-pre-line text-balance font-medium text-xl leading-snug">
 						{aspect.name}
 					</h2>
-					<p className="px-6 font-medium text-sm leading-tight opacity-90">
-						{aspect.description}
-					</p>
+					{aspect.description && (
+						<p className="flex items-center px-8 font-medium text-sm leading-snug opacity-90">
+							{aspect.description}
+						</p>
+					)}
 				</section>
 
 				{action ? (
-					<section>
-						<h2 className="px-6 font-medium text-sm leading-tight opacity-90">
-							Action
-						</h2>
-						<p className="whitespace-pre-line text-balance font-medium leading-tight">
-							{action}
-						</p>
-					</section>
+					<CardSection heading="Action" body={action} />
 				) : (
-					<ul className="flex flex-wrap justify-center gap-x-1 px-4 *:not-last:after:opacity-75 *:not-last:after:content-[',']">
+					<ul className="flex h-12 flex-wrap items-center justify-center gap-x-1 px-6 *:not-last:after:opacity-75 *:not-last:after:content-[',']">
 						{aspect.actions.map((action) => (
 							<li
 								key={action}
@@ -444,14 +451,9 @@ function AspectInstinctCard({
 					</ul>
 				)}
 
-				<section>
-					<h2 className="px-6 font-medium text-sm leading-tight opacity-90">
-						Find
-					</h2>
-					<p className="whitespace-pre-line text-balance font-medium leading-tight">
-						{aspect.perception}
-					</p>
-				</section>
+				{arts && <CardSection heading="Nature Art" body={arts.join("\n")} />}
+
+				<CardSection heading="Find" body={aspect.perception} />
 			</div>
 		</Card>
 	)
@@ -550,7 +552,7 @@ function CardSection({
 }) {
 	return (
 		<section>
-			<h2 className="px-6 font-medium text-sm leading-tight opacity-75">
+			<h2 className="px-6 font-medium text-sm leading-tight opacity-80">
 				{heading}
 			</h2>
 			<p className="whitespace-pre-line text-balance font-medium leading-tight">
