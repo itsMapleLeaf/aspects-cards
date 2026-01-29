@@ -1,72 +1,55 @@
 import { Icon } from "@iconify/react"
-import { toPng } from "html-to-image"
-import { type ReactNode, useRef } from "react"
+import * as htmlToImage from "html-to-image"
+import {
+	type FileSystemDirectoryHandle,
+	showDirectoryPicker,
+} from "native-file-system-adapter"
+import { type ReactNode, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 const tw = String.raw
 
 type AspectCard = {
 	name: string
-	icon: string
-	aura: string
-	element: string[]
-	found: string
-	effect: string
-	className: string
-	iconClassName?: string
+	description?: string
 	actions: string[]
+	className: string
+	icon: string
+	perception: string
 }
 
 const aspects: AspectCard[] = [
 	{
-		name: "Animosity",
+		name: "Aggression",
+		description: "violence, brute force, athletic prowess",
+		actions: ["Strike", "Hold", "Dash"],
 		icon: "mingcute:sword-line",
-		aura: "rage, envy, drive",
-		element: ["Fire", "Lightning"],
-		found: "dangerous",
-		effect: "Damage (+1 die)",
+		perception: "a weakness",
 		className: tw`bg-aspects-red text-aspects-red-dark`,
-		actions: ["Strike", "Block", "Push", "Throw", "Endure", "Dominate"],
+	},
+	{
+		name: "Evasion",
+		description: "isolation, deflection, sidestepping",
+		actions: ["Evade", "Sneak", "Finesse"],
+		icon: "mingcute:forbid-circle-line",
+		perception: "a way out",
+		className: tw`bg-aspects-purple text-aspects-purple-dark`,
+	},
+	{
+		name: "Influence",
+		description: "social leverage, status, invisible pressure",
+		actions: ["Read", "Persuade", "Deceive"],
+		icon: "mingcute:eye-line",
+		perception: "an opportunity",
+		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
 	},
 	{
 		name: "Connection",
+		description: "bonding, protection, safety",
+		actions: ["Protect", "Restore", "Charm"],
 		icon: "mingcute:shield-shape-line",
-		aura: "peace, comfort, protection",
-		element: ["Water", "Healing"],
-		found: "inviting",
-		effect: "Block (1d6)",
+		perception: "safety",
 		className: tw`bg-aspects-blue text-aspects-blue-dark`,
-		actions: ["Protect", "Comfort", "Charm", "Empower", "Read", "Restore"],
-	},
-	{
-		name: "Freedom",
-		icon: "mingcute:bling-line",
-		aura: "liberation, swiftness, flexibility",
-		element: ["Wind", "Sound"],
-		found: "curious",
-		effect: "Reroll 1 die",
-		className: tw`bg-aspects-green text-aspects-green-dark`,
-		actions: ["Dash", "Aim", "Finesse", "Sneak", "Deflect", "Evade"],
-	},
-	{
-		name: "Wonder",
-		icon: "mingcute:compass-line",
-		aura: "knowledge, perception",
-		element: ["Light", "Guidance"],
-		found: "valuable",
-		effect: "Heal (1d6)",
-		className: tw`bg-aspects-yellow text-aspects-yellow-dark`,
-		actions: ["Evaluate", "Operate", "Create", "Locate", "Read", "Restore"],
-	},
-	{
-		name: "Tension",
-		icon: "mingcute:heart-crack-line",
-		aura: "suspicion, mistrust, manipulation",
-		element: ["Darkness", "Mind"],
-		found: "unsettling",
-		effect: "Evade (2d6)",
-		className: tw`bg-aspects-purple text-aspects-purple-dark`,
-		actions: ["Deceive", "Endure", "Dominate", "Sneak", "Deflect", "Evade"],
 	},
 ]
 
@@ -161,148 +144,205 @@ const arts: NatureArtCard[] = [
 const cardClass = tw`aspect-[2.5/3.5] h-70 overflow-clip rounded-xl border-4`
 
 export function App() {
-	const cardGridRef = useRef<HTMLDivElement>(null)
+	const combinedCardGridRef = useRef<HTMLDivElement>(null)
+	const splitCardGridRef = useRef<HTMLDivElement>(null)
 	const previewRef = useRef<HTMLDivElement>(null)
+	const [directoryHandle, setDirectoryHandle] =
+		useState<FileSystemDirectoryHandle>()
+
+	const saveImage = async (
+		subject: HTMLElement,
+		fileName: string,
+		directoryHandle: FileSystemDirectoryHandle,
+	) => {
+		const targetSize = 3000
+
+		const scale = Math.min(
+			targetSize / subject.clientWidth,
+			targetSize / subject.clientHeight,
+			1,
+		)
+
+		const image = await htmlToImage.toBlob(subject, {
+			canvasWidth: subject.clientWidth * scale,
+			canvasHeight: subject.clientHeight * scale,
+		})
+
+		const file = await directoryHandle.getFileHandle(fileName, {
+			create: true,
+		})
+		const writer = await file.createWritable()
+		await writer.write(image)
+		await writer.close()
+	}
+
+	const saveAll = async (directoryHandle: FileSystemDirectoryHandle) => {
+		try {
+			await saveImage(
+				combinedCardGridRef.current as HTMLElement,
+				"aspect-cards-instincts.png",
+				directoryHandle,
+			)
+			await saveImage(
+				previewRef.current as HTMLElement,
+				"aspect-cards-preview.png",
+				directoryHandle,
+			)
+			alert("Saved successfully")
+		} catch (error) {
+			alert(`Error: ${error}`)
+		}
+	}
+
+	const cardBack = (
+		<div
+			className={twMerge(
+				cardClass,
+				"relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60 -outline-offset-4",
+				"bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green",
+			)}
+		>
+			<div className="absolute inset-0 bg-stripes opacity-4"></div>
+			<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
+			<Icon
+				icon="lucide:pentagon"
+				className="size-32 drop-shadow-black/20 drop-shadow-md"
+			/>
+		</div>
+	)
 
 	return (
 		<main className="flex h-dvh flex-col items-start gap-4 p-4">
-			<button
-				type="button"
-				className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
-				onClick={async () => {
-					{
-						const subject = cardGridRef.current as HTMLElement
-						const targetSize = 3000
+			<div className="flex gap-2">
+				<button
+					type="button"
+					className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
+					onClick={async () => {
+						const dir = await showDirectoryPicker({
+							mode: "readwrite",
+						} as any)
+						setDirectoryHandle(dir)
+						await saveAll(dir)
+					}}
+				>
+					choose directory
+				</button>
 
-						const scale = Math.min(
-							targetSize / subject.clientWidth,
-							targetSize / subject.clientHeight,
-						)
-
-						const dataUrl = await toPng(subject, {
-							canvasWidth: subject.clientWidth * scale,
-							canvasHeight: subject.clientHeight * scale,
-						})
-						const link = document.createElement("a")
-						link.download = "aspect-cards.png"
-						link.href = dataUrl
-						link.click()
-					}
-					{
-						const subject = previewRef.current as HTMLElement
-						const targetSize = 3000
-
-						const scale = Math.min(
-							targetSize / subject.clientWidth,
-							targetSize / subject.clientHeight,
-						)
-
-						const dataUrl = await toPng(subject, {
-							canvasWidth: subject.clientWidth * scale,
-							canvasHeight: subject.clientHeight * scale,
-						})
-
-						const link = document.createElement("a")
-						link.download = "aspect-cards-preview.png"
-						link.href = dataUrl
-						link.click()
-					}
-				}}
-			>
-				export
-			</button>
+				{directoryHandle && (
+					<button
+						type="button"
+						className="rounded-md bg-aspects-blue px-3 py-2 text-aspects-blue-dark leading-tight transition hover:brightness-80"
+						onClick={() => saveAll(directoryHandle)}
+					>
+						save
+					</button>
+				)}
+			</div>
 
 			<div className="flex gap-2" ref={previewRef}>
 				{aspects.map((aspect) => (
-					<AspectSkillCard
-						key={aspect.name}
-						aspect={aspect}
-						action={aspect.actions[0]}
-					/>
+					<AspectInstinctCard key={aspect.name} aspect={aspect} />
 				))}
 			</div>
 
+			<div className="flex gap-2" ref={combinedCardGridRef}>
+				{aspects.map((aspect) => (
+					<AspectInstinctCard key={aspect.name} aspect={aspect} />
+				))}
+				{cardBack}
+			</div>
+
 			<div
-				ref={cardGridRef}
-				className="grid grid-cols-[repeat(7,1fr)] place-content-center gap-2"
+				ref={splitCardGridRef}
+				className="grid grid-cols-[repeat(4,1fr)] place-content-center gap-2"
 			>
-				{aspects.map((aspect, aspectIndex) =>
+				{aspects.map((aspect) =>
 					[
 						...aspect.actions.sort((a, b) =>
 							a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()),
 						),
 						"Any",
-					].map((action, actionIndex) => (
-						<div
+					].map((action) => (
+						<AspectInstinctCard
 							key={`${aspect.name}-${action}`}
-							// style={{
-							// 	gridRow: aspectIndex + 1,
-							// 	gridColumn: actionIndex + 1,
-							// }}
-						>
-							<AspectSkillCard
-								key={aspect.name}
-								aspect={aspect}
-								action={action}
-							/>
-						</div>
+							aspect={aspect}
+							action={action}
+						/>
 					)),
 				)}
 
-				{arts.map((art) => (
-					<Card
-						key={art.name}
-						className={twMerge(art.className, "gap-5")}
-						icon={art.icon}
-						topLabel={art.name}
-						bottomLabel={art.name}
-						sections={[{ label: "Art", text: art.name }]}
-						description={art.description}
-					/>
-				))}
-
-				<div
-					className={twMerge(
-						cardClass,
-						"-outline-offset-4 relative flex items-center justify-center border-none text-black/45 outline-4 outline-black/60",
-						"bg-linear-to-br from-aspects-purple via-aspects-blue to-aspects-green",
-						// "bg-fuchsia-300",
-					)}
-				>
-					<div className="absolute inset-0 bg-stripes opacity-4"></div>
-					<div className="absolute inset-0 bg-linear-to-t from-black/15"></div>
-					<Icon
-						icon="lucide:pentagon"
-						className="size-32 drop-shadow-black/20 drop-shadow-md"
-					/>
-				</div>
+				{cardBack}
 			</div>
 		</main>
 	)
 }
 
-function AspectSkillCard({
+function AspectInstinctCard({
 	aspect,
 	action,
 }: {
 	aspect: AspectCard
-	action: string
+	action?: string
 }) {
 	return (
 		<Card
 			className={aspect.className}
 			icon={aspect.icon}
-			topLabel={aspect.name}
-			bottomLabel={aspect.name}
-			leftLabel={action}
-			rightLabel={action}
-			sections={[
-				{ label: "Aspect", text: aspect.name },
-				{ label: `Skill`, text: action },
-				// { label: "Art", text: aspect.element.join("\n") },
-				{ label: "Find Something", text: aspect.found },
-			]}
-		/>
+			// topLabel={aspect.name}
+			// bottomLabel={aspect.name}
+			// leftLabel={aspect.name}
+			// rightLabel={aspect.name}
+			// leftLabel={action}
+			// rightLabel={action}
+			// sections={[
+			// 	{ label: "Aspect", text: aspect.name },
+			// 	{ label: `Skill`, text: action },
+			// 	// { label: "Art", text: aspect.element.join("\n") },
+			// 	{ label: "Find Something", text: aspect.found },
+			// ]}
+		>
+			<div className="flex flex-col items-center gap-4 text-center">
+				<section>
+					<h2 className="whitespace-pre-line text-balance font-medium text-xl">
+						{aspect.name}
+					</h2>
+					<p className="px-6 font-medium text-sm leading-tight opacity-90">
+						{aspect.description}
+					</p>
+				</section>
+
+				{action ? (
+					<section>
+						<h2 className="px-6 font-medium text-sm leading-tight opacity-90">
+							Action
+						</h2>
+						<p className="whitespace-pre-line text-balance font-medium leading-tight">
+							{action}
+						</p>
+					</section>
+				) : (
+					<ul className="flex flex-wrap justify-center gap-x-1 px-4 *:not-last:after:opacity-75 *:not-last:after:content-[',']">
+						{aspect.actions.map((action) => (
+							<li
+								key={action}
+								className="whitespace-pre-line text-balance font-medium leading-tight"
+							>
+								{action}
+							</li>
+						))}
+					</ul>
+				)}
+
+				<section>
+					<h2 className="px-6 font-medium text-sm leading-tight opacity-90">
+						Find
+					</h2>
+					<p className="whitespace-pre-line text-balance font-medium leading-tight">
+						{aspect.perception}
+					</p>
+				</section>
+			</div>
+		</Card>
 	)
 }
 
@@ -315,6 +355,7 @@ function Card({
 	rightLabel,
 	sections,
 	description,
+	children,
 }: {
 	className?: string
 	icon?: string
@@ -324,6 +365,7 @@ function Card({
 	rightLabel?: string
 	sections?: { label: string; text: string }[]
 	description?: ReactNode
+	children?: React.ReactNode
 }) {
 	return (
 		<div
@@ -354,18 +396,18 @@ function Card({
 			)}
 
 			{topLabel && (
-				<div className="-translate-x-1/2 absolute top-2.5 left-1/2 font-medium text-[11px] opacity-80">
+				<div className="absolute top-2.5 left-1/2 -translate-x-1/2 font-medium text-[11px] opacity-80">
 					{topLabel}
 				</div>
 			)}
 			{bottomLabel && (
-				<div className="-translate-x-1/2 absolute bottom-2.5 left-1/2 font-medium text-[11px] opacity-80">
+				<div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 font-medium text-[11px] opacity-80">
 					{bottomLabel}
 				</div>
 			)}
 
 			{leftLabel && (
-				<div className="-translate-x-1/2 -rotate-90 absolute left-3.5 font-medium text-[11px] opacity-80">
+				<div className="absolute left-3.5 -translate-x-1/2 -rotate-90 font-medium text-[11px] opacity-80">
 					{leftLabel}
 				</div>
 			)}
@@ -392,6 +434,8 @@ function Card({
 					{description}
 				</p>
 			)}
+
+			{children}
 		</div>
 	)
 }
